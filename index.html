@@ -3,75 +3,119 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Administrador de Sistemas y Ciberseguridad</title>
+    <meta name="description" content="Servicios de administración de sistemas y ciberseguridad para proteger su empresa">
+    <meta name="keywords" content="ciberseguridad, administración de sistemas, seguridad informática, Juan Fco Entrena">
+    <meta name="author" content="Juan Fco Entrena">
+    <title>Administrador de Sistemas y Ciberseguridad | Juan Fco Entrena</title>
     <link rel="stylesheet" href="./CSS/styles.css">
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-    <script src="https://kit.fontawesome.com/ce8b97e48b.js" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <header>
         <div class="cta">
             <h1>Protege tu Empresa Hoy</h1>
-            <div class="video-container">
-                <video autoplay loop muted>
-                    <source src="./content/video.mp4" type="video/mp4">
-                    Tu navegador no soporta la reproducción de videos.
-                </video>
-                <div class="cta-button">
-                    <a href="#contact">Pedir Presupuestos Juan Fco Entrena</a>
-                </div>
+            <div class="cta-button">
+                <a href="#contact" class="btn-primary">Solicita tu Presupuesto</a>
             </div>
+        </div>
+        <div class="video-container">
+            <video autoplay loop muted playsinline aria-label="Video de presentación sobre ciberseguridad">
+                <source src="./content/video.mp4" type="video/mp4">
+                Tu navegador no soporta la reproducción de videos.
+            </video>
         </div>
     </header>
     
-    <section class="services">
-        <h2>Nuestros Servicios</h2>
-        <div class="services-cards">
-            <div class="card"><i class="fa-brands fa-windows"></i>&emsp;Administracion de Sistemas Windows</div>
-            <div class="card"><i class="fa-brands fa-linux"></i>&emsp;Administrador de Sistemas Linux</div>
-            <div class="card"><i class="fa-solid fa-network-wired"></i>&emsp;Service Desk</div>
-            <div class="card"><i class="fa-regular fa-globe-pointer"></i>&emsp;Implantación de SIEM en Empresas</div>
-            <div class="card"><i class="fa-solid fa-diagram-project"></i>&emsp;Arquitectura de Red</div>
-            <div class="card"><i class="fa-solid fa-ethernet"></i>&emsp;Configuración y Puesta en Servicio de Electrónicas de Red</div>
-        </div>
-    </section>
-    
-    <section class="contact" id="contact">
-        <h2>Contacto para Presupuestos</h2>
-        <form action="enviar_formulario.php" method="post">
-            <label for="name">Nombre:</label>
-            <input type="text" id="name" name="name" required>
-            
-            <label for="email">Correo Electrónico:</label>
-            <input type="email" id="email" name="email" required>
-            
-            <label for="phone">Teléfono:</label>
-            <input type="tel" id="phone" name="phone">
-            
-            <label for="services">Servicios Requeridos:</label>
-            <textarea id="services" name="services" required></textarea>
-            
-            <div class="g-recaptcha" data-sitekey="TU_CLAVE_DEL_SITIO"></div>
-            
-            <button type="submit">Enviar</button>
-        </form>
-    </section>
+    <main>
+        <section class="services">
+            <h2>Nuestros Servicios</h2>
+            <div class="services-cards">
+                <div class="card">
+                    <i class="fa-brands fa-windows"></i>
+                    <h3>Administración de Sistemas Windows</h3>
+                    <p>Gestión y mantenimiento de servidores y estaciones de trabajo Windows.</p>
+                </div>
+                <div class="card">
+                    <i class="fa-brands fa-linux"></i>
+                    <h3>Administración de Sistemas Linux</h3>
+                    <p>Configuración y optimización de servidores Linux para tu empresa.</p>
+                </div>
+                <div class="card">
+                    <i class="fa-solid fa-network-wired"></i>
+                    <h3>Service Desk</h3>
+                    <p>Soporte técnico especializado para resolver incidencias rápidamente.</p>
+                </div>
+                <div class="card">
+                    <i class="fa-regular fa-globe-pointer"></i>
+                    <h3>Implantación de SIEM en Empresas</h3>
+                    <p>Protege tu infraestructura con sistemas de monitorización avanzada.</p>
+                </div>
+                <div class="card">
+                    <i class="fa-solid fa-diagram-project"></i>
+                    <h3>Arquitectura de Red</h3>
+                    <p>Diseño y optimización de redes para máxima eficiencia y seguridad.</p>
+                </div>
+                <div class="card">
+                    <i class="fa-solid fa-ethernet"></i>
+                    <h3>Configuración de Electrónicas de Red</h3>
+                    <p>Instalación y puesta en marcha de dispositivos de red.</p>
+                </div>
+            </div>
+        </section>
+        
+        <section class="contact" id="contact">
+            <h2>Contacto para Presupuestos</h2>
+            <form action="./enviar_formulario.php" method="post">
+                <div class="form-group">
+                    <label for="name">Nombre:</label>
+                    <input type="text" id="name" name="name" required placeholder="Introduce tu nombre">
+                </div>
+                <div class="form-group">
+                    <label for="email">Correo Electrónico:</label>
+                    <input type="email" id="email" name="email" required placeholder="Introduce tu correo electrónico">
+                </div>
+                <div class="form-group">
+                    <label for="phone">Teléfono:</label>
+                    <input type="tel" id="phone" name="phone" placeholder="Introduce tu teléfono">
+                </div>
+                <div class="form-group">
+                    <label for="services">Servicios Requeridos:</label>
+                    <textarea id="services" name="services" required placeholder="Describe los servicios que necesitas"></textarea>
+                </div>
+                <div class="form-group">
+                    <div class="g-recaptcha" data-sitekey="6Lc7CJAqAAAAADfl0yAd1TtcBnDQYcCJ_uViwFQ7"></div>
+                </div>
+                <button type="submit" class="btn-primary">Enviar</button>
+            </form>
+        </section>
+    </main>
     
     <footer>
-        <p><a href="politica_seguridad.html">Política de Seguridad</a> | <a href="politica_cookies.html">Política de Cookies</a></p>
+        <div class="footer-content">
+            <p>&copy; 2023 Juan Fco Entrena. Todos los derechos reservados.</p>
+            <nav>
+                <a href="politica_seguridad.html">Política de Seguridad</a> | 
+                <a href="politica_cookies.html">Política de Cookies</a>
+            </nav>
+        </div>
     </footer>
+
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <script src="https://kit.fontawesome.com/ce8b97e48b.js" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+        (function(d, t) {
+            var v = d.createElement(t), s = d.getElementsByTagName(t)[0];
+            v.onload = function() {
+              window.voiceflow.chat.load({
+                verify: { projectID: '67444a306414aa7986e3f093' },
+                url: 'https://general-runtime.voiceflow.com',
+                versionID: 'production'
+              });
+            }
+            v.src = "https://cdn.voiceflow.com/widget/bundle.mjs"; v.type = "text/javascript"; s.parentNode.insertBefore(v, s);
+        })(document, 'script');
+    </script>
 </body>
-<script type="text/javascript">
-    (function(d, t) {
-        var v = d.createElement(t), s = d.getElementsByTagName(t)[0];
-        v.onload = function() {
-          window.voiceflow.chat.load({
-            verify: { projectID: '67444a306414aa7986e3f093' },
-            url: 'https://general-runtime.voiceflow.com',
-            versionID: 'production'
-          });
-        }
-        v.src = "https://cdn.voiceflow.com/widget/bundle.mjs"; v.type = "text/javascript"; s.parentNode.insertBefore(v, s);
-    })(document, 'script');
-  </script>
 </html>
