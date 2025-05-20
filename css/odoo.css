@@ -359,6 +359,12 @@ main ul p {
   margin-bottom: 10px;
 }
 
+/* Estilos para imagenes */
+main img{
+  width: 80%;
+  height: auto;
+}
+
 /*-------------------------------------------------------FOOTER-------------------------------------------------------*/
 footer {
   grid-area: footer;
@@ -414,6 +420,10 @@ footer h4 {
     margin-left: 100px;
     margin-right: 100px;
   }
+  main img{
+  width: 100%;
+  height: auto;
+}
   
   aside section {
     column-gap: 30px;
@@ -541,7 +551,10 @@ footer h4 {
       "main"
       "footer";
   }
-
+  main img{
+  width: 100%;
+  height: auto;
+}
   /* Header */
   header {
     width: 100%;
@@ -615,6 +628,7 @@ footer h4 {
     display: block;
     transition: all 0.3s ease;
   }
+ 
   
   /* Ajuste para el botón de tema en móvil */
   .theme-toggle {
@@ -762,6 +776,10 @@ footer h4 {
     z-index: 1000;
     transition: all 0.3s ease;
   }
+    main img{
+  width: 100%;
+  height: auto;
+}
   
   #main-nav.nav-visible ul {
     list-style: none;
