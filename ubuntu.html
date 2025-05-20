@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <!--Instrucciones de Instalación de Odoo-->
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Instrucciones de Instalación de Odoo - Software ERP</title>
+    <meta name="description" content="Guía completa de instalación de Odoo ERP" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="./css/odoo.css">
+</head>
+
+<body>
+    <header>
+        <h1>ODOO</h1>
+        <h2>Guía de Instalación del ERP Open Source</h2>
+        <button id="menu-toggle-button" class="menu-button">☰</button>
+    </header>
+    <nav id="main-nav">
+        <ul>
+            <li><a href="index.html">Inicio</a></li>
+            <li><a href="odoo.html">Odoo</a></li>
+            <li><a href="ubuntu.html">Ubuntu</a></li>
+            <li><a href="windows.html">Windows 10/11</a></li>
+            <li><a href="docker.html">Docker</a></li>
+            <button id="theme-toggle" class="theme-toggle" aria-label="Cambiar tema">
+                <span class="sun-icon icon">☀️</span>
+                <span class="moon-icon icon">🌙</span>
+                <span class="slider"></span>
+            </button>
+        </ul>
+    </nav>
+    <aside>
+        <h1>Guía Completa de Instalación de Odoo ERP</h1>
+        <h3>Aprende a instalar y configurar Odoo 17 paso a paso</h3>
+        <button class="boton" id="comenzar-btn">Comenzar ahora</button>
+        <section class="SSOO">
+            <p class="ubuntu"></p>
+        </section>
+    </aside>
+    
+    <main>
+        <section class="seccion1" id="requisitos">
+            <div class="textoSeccion1">
+                <h2>Instalación en Ubuntu</h2>
+                <br>
+                <h2></h2>
+                <ul>
+                    <li>
+                        <strong>Paso 1:</strong> Actualizar los paquetes de Ubuntu.<br>
+                        Comience por actualizar la lista de paquetes de su sistema y actualizar los paquetes existentes a sus últimas versiones:
+                        <pre>
+sudo apt update 
+sudo apt upgrade 
+                        </pre>
+                    </li>
+                    <li>
+                        <strong>Paso 2:</strong> Instalar las dependencias de Odoo.<br>
+                        Odoo está escrito en Python y requiere varias dependencias. Instálalos con:
+                        <pre>
+sudo apt install git python3-pip build-essential wget python3-dev python3-venv \
+python3-wheel libxslt-dev libzip-dev libldap2-dev libsasl2-dev python3-setuptools \
+node-less libjpeg-dev libpq-dev -y 
+                        </pre>
+                    </li>
+                    <li>
+                        <strong>Paso 3:</strong> Crear usuario de Odoo.<br>
+                        Ejecutar Odoo con privilegios de root puede comprometer la seguridad.<br> En su lugar, establezca un usuario del sistema, un grupo y un directorio de inicio dedicados para Odoo:
+                        <br>Utilice este comando para crear un nuevo usuario llamado 'odoo17':
+                        <pre>
+sudo useradd -m -d /opt/odoo17 -U -r -s /bin/bash odoo17 
+                        </pre>
+                    </li>
+                    <li>
+                        <strong>Paso 4:</strong> Instalar y configurar PostgreSQL.<br>
+                        Odoo confía en PostgreSQL para sus necesidades de base de datos.<br>
+                        Para instalar PostgreSQL, búscalo de los repositorios oficiales de Ubuntu usando el siguiente comando:
+                        <pre>
+sudo apt install postgresql -y 
+                        </pre>
+                        Durante la instalación, cuando se le solicite confirmación, presione 'Y' para continuar. <br>
+                        Una vez completada la instalación, proceda a configurar un usuario de Postgres que coincida con el nombre que eligió en el paso anterior:
+                        <pre>
+sudo su - postgres -c "createuser -s odoo17"   
+                        </pre>
+                    </li>
+                    <li>
+                        <strong>Paso 5:</strong> Instalar Wkhtmltopdf.<br>
+                        Wkhtmltopdf es una herramienta de línea de comandos de código abierto para renderizar HTML en PDF y varios formatos de imagen. 
+                        <br>Es necesario para generar informes PDF en Odoo.
+                        <pre>
+wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-3/wkhtmltox_0.12.6.1-3.jammy_amd64.deb 
+sudo apt install ./wkhtmltox_0.12.6.1-3.jammy_amd64.deb 
+                        </pre>
+                    </li>
+                    <li>
+                        <strong>Paso 6:</strong> Instalar Odoo desde el código fuente.<br>
+                        Cambiar de usuario: Cambia al usuario odoo17 con el comando sudo su:
+                        <pre>
+su - odoo17    
+                        </pre>
+                        Código de descarga: Clona el código fuente de Odoo 17 desde su repositorio oficial de Github:
+                        <pre>
+sudo git clone https://www.github.com/odoo/odoo --depth 1 --branch 17.0 --single-branch   
+                        </pre>
+                        Cambiar al directorio de código fuente de Odoo 17:
+                        <pre>
+cd /opt/odoo17/odoo   
+                        </pre>
+                        Configurar el entorno de Python: Cree un entorno virtual de Python y actívelo:
+                        <pre>
+python3 -m venv venv && source venv/bin/activate  
+                        </pre>
+                        Instale los paquetes de Python requeridos por Odoo:
+                        <pre>
+pip3 install wheel 
+pip3 install -r requirements.txt 
+                        </pre>
+                    </li>
+                    <li>
+                        <strong>Paso 7:</strong> Configurar el archivo de configuración de Odoo<br>
+                        Proceda a crear un archivo de configuración para el servidor Odoo. <br>
+                        Este paso es crucial para adaptar la aplicación Odoo a tus necesidades. <br>
+                        Comience editando el archivo ubicado en /etc/odoo17.conf usando su editor de texto preferido:
+                        <pre>
+sudo nano /etc/odoo17.conf 
+                        </pre>
+                        Inserte las siguientes líneas en el archivo:<br>
+                        <pre>
+[options]
+; Database operations password:
+admin_passwd = PASSWORD
+db_host = False
+db_port = False
+db_user = odoo
+db_password = False
+addons_path = /opt/odoo17/odoo/addons,/opt/odoo17/odoo/custom_addons
+logfile = /var/log/odoo17.log
+log_level  = debug
+                        </pre>
+                        Recuerde reemplazar el admin_passwd con una contraseña segura. Guarde y cierre el archivo.<br>
+                        A continuación, actualice la propiedad y los permisos del archivo de configuración al usuario de Odoo:
+                        <pre>
+sudo chown odoo17:odoo17 /etc/odoo17.conf  
+                        </pre>
+                    </li>
+                    <li>
+                        <strong>Paso 8:</strong> Elaboración del archivo de unidad Systemd de Odoo.<br>
+                        Para una gestión eficiente del servicio de Odoo y para permitir su inicio automático en el arranque, cree un archivo de unidad de Systemd.<br> 
+                        Comience creando y editando un nuevo archivo llamado odoo17.service:
+                        <pre>
+sudo nano /etc/systemd/system/odoo17.service  
+                        </pre>
+                        Agregue estos contenidos al archivo:
+                        <pre>
+[Unit]
+Description=Odoo 17.0 Service
+Requires=postgresql.service
+After=network.target postgresql.service
+
+[Service]
+Type=simple
+SyslogIdentifier=odoo
+PermissionsStartOnly=true
+User=odoo17
+Group=odoo17
+ExecStart=/opt/odoo17/odoo/venv/bin/python3 /opt/odoo17/odoo/odoo-bin -c /etc/odoo17.conf
+StandardOutput=journal+console
+
+[Install]
+WantedBy=multi-user.target  
+                        </pre>
+                        Guarde y salga del archivo.<br>
+                        Ahora, vuelve a cargar el demonio systemd:
+                        <pre>
+sudo systemctl daemon-reload  
+                        </pre>
+                        Inicie y habilite el servicio de Odoo:
+                        <pre>
+sudo systemctl enable --now odoo17.service   
+                        </pre>
+                       Comprueba el estado del servicio:
+                        <pre>
+sudo systemctl status odoo17.service  
+                        </pre>
+                        Deberías ver que el servicio de Odoo está activo y en ejecución.
+                    </li>
+                    <li>
+                        <strong>Paso 9:</strong> Acceso a la aplicación Odoo.<br>
+                        Odoo normalmente opera en el puerto 8069. <br>
+                        Abra su navegador web y navegue hasta su servidor Odoo en este puerto:
+                        <pre>
+http://server-ip-host:8069
+                        </pre>
+                        Para acceder por primera vez, encontrarás la página de creación de la base de datos de Odoo. <br>
+                        Utilice la contraseña maestra establecida en el archivo odoo-server.conf.  <br>
+                        Elija un nombre de base de datos y establezca el nombre de usuario y la contraseña para futuros inicios de sesión en el panel de control de Odoo.  <br>
+                        Si desea datos de demostración, marque la casilla de verificación correspondiente.  <br>
+                        Haga clic en "Crear base de datos" para finalizar la configuración. <br>
+                    </li>
+                    <li>
+                        <strong>Paso 10:</strong> Modificar el número de puerto predeterminado (opcional)<br>
+                        Odoo funciona en el puerto 8069 de forma predeterminada. <br>
+                        Para mejorar la seguridad, es aconsejable cambiar a un número de puerto diferente.<br>
+                        Para configurar Odoo para que funcione exclusivamente en el puerto 8000 y <br>
+                        escuche solo en la interfaz local (127.0.0.1), agregue estas líneas al archivo:/etc/odoo17.conf<br>
+                        <pre>
+xmlrpc_interface = 127.0.0.1
+netrpc_interface = 127.0.0.1
+xmlrpc_port = 8000
+                        </pre>
+                        Después de realizar estos ajustes, reinicie el servicio Odoo para activar la nueva configuración:
+                        <pre>
+sudo systemctl restart odoo17 
+                        </pre>
+                    </li>
+                </ul>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <h1>ERP Instalación ODOO</h1>
+        <h2>Software de Gestión Empresarial Open Source</h2>
+        <h3>Guía de Instalación y Configuración</h3>
+        <h4>© 2025 - Juan Fco Entrena Garrido</h4>
+    </footer>
+    <script>
+        // Script para navegación suave con enlaces internos
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                target.scrollIntoView({
+                    behavior: 'smooth', // Scroll suave
+                    block: 'start'      // Alinea al inicio de la sección
+                });
+            });
+        });
+
+        // Script para el botón "Comenzar ahora"
+        document.getElementById('comenzar-btn').addEventListener('click', function() {
+            const requisitosSection = document.getElementById('requisitos');
+            requisitosSection.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        });
+
+        // Script para el menú móvil
+        document.getElementById('menu-toggle-button').addEventListener('click', function() {
+            document.getElementById('main-nav').classList.toggle('nav-visible');
+        });
+    </script>
+    <script src="./scripts/theme_toggle.js"></script>
+</body>
+
+</html>

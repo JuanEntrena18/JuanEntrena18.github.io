@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <!--Proyecto Software de Gestión de Empresas por Juan Fco Entrena Garrido-->
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Proyecto Software de Gestión de Empresas por Juan Fco Entrena Garrido</title>
+    <meta name="description" content="Software de Gestión de Empresas" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="./css/oscuro.css">
+</head>
+
+<body>
+    <header>
+        <h1>ERP</h1>
+        <h2>Software de Gestión de Empresas Open Source</h2>
+        <button id="menu-toggle-button" class="menu-button">☰</button>
+    </header>
+    <nav id="main-nav">
+        <ul>
+            <li><a href="#">Inicio</a></li>
+            <li><a href="#que_es">¿Qué es un ERP?</a></li>
+            <li><a href="odoo.html">Instalar Odoo</a></li>
+            <button id="theme-toggle" class="theme-toggle" aria-label="Cambiar tema">
+            <span class="sun-icon icon">☀️</span>
+            <span class="moon-icon icon">🌙</span>
+            <span class="slider"></span>
+        </button>
+        </ul>
+    </nav>
+    <aside>
+        <h1>Proyecto sobre Software de Gestion de Empresas Open Source</h1>
+        <h3>Haz clic aquí para conocer más sobre este proyecto</h3>
+        <button class="boton" id="comenzar-btn">Pulsa aquí</button>
+    </aside>
+    <main>
+        <section class="seccion1" id="que_es">
+            <div class="imagenSeccion1">
+                <p></p>
+            </div>
+            <div class="textoSeccion1">
+                <h2>¿Que es un ERP?</h2>
+                <p>
+                    Un software de gestión empresarial open source (o de
+                    código abierto)
+                    es una solución ERP que permite a los usuarios acceder
+                    al código
+                    fuente y modificarlo según sus necesidades, sin depender
+                    de un
+                    proveedor único.
+                </p>
+                <p>
+                    Esto ofrece mayor flexibilidad, personalización y
+                    control sobre la
+                    implementación del sistema
+                </p>
+                <ul>
+                    <p>Características clave del software ERP open
+                        source:</p>
+                    <li>
+                        Código fuente accesible: Los usuarios pueden ver,
+                        modificar y
+                        distribuir el código fuente.
+                    </li>
+                    <li>
+                        Flexibilidad y personalización: Permite adaptar el
+                        software a las
+                        necesidades específicas de la empresa.
+                    </li>
+                    <li>
+                        Menor coste de implantación: La ausencia de
+                        licencias reduce
+                        significativamente los costos iniciales.
+                    </li>
+                    <li>
+                        Mayor control sobre el sistema: Los usuarios tienen
+                        mayor control
+                        sobre la infraestructura, la implementación y la
+                        gestión del
+                        sistema.
+                    </li>
+                    <li>
+                        Comunidad de desarrolladores: Las comunidades de
+                        usuarios y
+                        desarrolladores open source ofrecen soporte, mejoras
+                        y
+                        actualizaciones.
+                    </li>
+                    <li>
+                        Integración con otros software: El código abierto
+                        facilita la
+                        integración con otros sistemas y herramientas de la
+                        empresa
+                    </li>
+                </ul>
+            </div>
+
+        </section>
+
+        <section class="seccion2">
+            <div class="imagenSeccion2">
+                <p></p>
+            </div>
+            <div class="textoSeccion2">
+                <h2>Beneficios de un ERP open source</h2>
+                <ul>
+                    <p>Beneficios de utilizar un ERP open source:</p>
+                    <li>
+                        Ahorro en costos: No hay necesidad de pagar licencias de
+                        software,
+                        lo que puede representar un ahorro significativo para
+                        las empresas,
+                        especialmente para pequeñas y medianas empresas.
+                    </li>
+                    <li>
+                        Mayor control y flexibilidad: Los usuarios tienen mayor
+                        control
+                        sobre el sistema y pueden adaptar el software a sus
+                        necesidades
+                        específicas, sin depender de un proveedor.
+                    </li>
+                    <li>
+                        Mejor adaptación a la evolución de la empresa: El código
+                        fuente
+                        accesible facilita la adaptación del software a la
+                        evolución de la
+                        empresa y a las nuevas tecnologías.
+                    </li>
+                    <li>
+                        Soporte comunitario: Las comunidades open source ofrecen
+                        soporte,
+                        mejoras y actualizaciones, lo que puede reducir los
+                        costos de
+                        mantenimiento y soporte.
+                    </li>
+                    <li>
+                        La accesibilidad al código fuente aumenta la
+                        transparencia y permite
+                        a los usuarios entender cómo funciona el sistema.
+                    </li>
+                </ul>
+            </div>
+        </section>
+        <section class="seccion3">
+            <div class="instalar">
+                <h2>Vamos a aprender a instalar y a usar el ERP de Odoo</h2>
+                <button onclick="location.href='odoo.html'">Instalar Odoo</button>
+            </div>
+            <div class="textoSeccion3">
+                <h2>Ejemplos de ERP open source</h2>
+                <p>Estos son algunos de los ERP open source más populares del
+                    mercado:
+                <ul>
+                    <li>Odoo</li>
+                    <li>ERPNext</li>
+                    <li>Dolibarr</li>
+                    <li>Tryton</li>
+                    <li>Apache OFBiz</li>
+                    <li>Metasfresh</li>
+                    <li>Axelor</li>
+                    <li>ERP5</li>
+                </ul>
+                </p>
+
+        </section>
+    </main>
+    <footer>
+        <h1>ERP</h1>
+        <h2>Software de Gestión de Empresas Open Source</h2>
+        <h3>Proyecto de Lenguaje de Marcas por Juan Fco Entrena Garrido</h3>
+        <h4>1 ASIR C IES ZAIDIN VERGELES 2025</h4>
+    </footer>
+    <script>
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                target.scrollIntoView({
+                    behavior: 'smooth', // Scroll suave
+                    block: 'start'      // Alinea al inicio de la sección
+                });
+            });
+        });
+           document.getElementById('comenzar-btn').addEventListener('click', function() {
+            const requisitosSection = document.getElementById('que_es');
+            requisitosSection.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        });
+    </script>
+    <script src="./scripts/theme_toggle.js"></script>
+
+</body>
+
+</html>

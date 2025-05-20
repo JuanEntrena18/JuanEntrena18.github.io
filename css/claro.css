@@ -1,0 +1,495 @@
+/*--------------------------------------------CSS MODO CLARO JUAN ENTRENA--------------------------------*/
+/*-------------------------------------------------------RESET-------------------------------------------*/
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+html {
+  scroll-behavior: smooth; /* Habilita el scroll lento */
+}
+/*-------------------------------------------------------FUENTES------------------------------------------*/
+@font-face {
+  font-family: "EuroStile";
+  src: url("../fonts/Eurostile.ttf");
+}
+/*-------------------------------------------------------BODY-------------------------------------------------------*/
+body {
+  background-image: url(../img/image4.jpg);
+  background-repeat: no-repeat;
+  background-size: contain;
+  font-family: "EuroStile";
+  display: grid;
+  grid-template-columns: 50% 50%;
+  grid-template-rows: 100px 800px 1fr 150px;
+  grid-template-areas:
+    "header nav"
+    "aside aside"
+    "main main"
+    "footer footer";
+}
+/*-------------------------------------------------------HEADER-------------------------------------------------------*/
+header {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  grid-area: header;
+  color: rgb(0, 0, 0);
+  background-color: rgba(245, 245, 220, 0.171);
+}
+header h1 {
+  font-size: 4rem;
+  text-shadow: 7px 4px 5px rgb(171, 171, 171);
+  letter-spacing: 15px;
+}
+header h2 {
+  font-size: 1rem;
+}
+/*-------------------------------------------------------NAV-------------------------------------------------------*/
+.menu-button {
+  display: none;
+}
+nav {
+  grid-area: nav;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(245, 245, 220, 0.171);
+}
+nav ul {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+nav ul li {
+  list-style: none;
+  padding: 10px;
+  margin: 10px;
+  font-size: 20px;
+  text-decoration: none;
+}
+nav ul li a {
+  text-decoration: none;
+  color: #000;
+}
+nav ul button {
+  background-color: grey;
+  color: white;
+  border: 0px;
+  padding: 10px;
+  font-family: "EuroStile";
+}
+/*-------------------------------------------------------ASIDE-------------------------------------------------------*/
+aside {
+  grid-area: aside;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+aside h1 {
+  font-family: "eurostile";
+  font-size: 50px;
+  color: white;
+  text-shadow: 1px 0px 0px black, 0px 1px 0px black, -1px 0px 0px black,
+    0px -1px 0px black;
+  padding-bottom: 20px;
+}
+aside h3 {
+  font-family: "eurostile";
+  font-size: 25px;
+  color: white;
+  text-shadow: 1px 0px 0px black, 0px 1px 0px black, -1px 0px 0px black,
+    0px -1px 0px black;
+  padding-bottom: 20px;
+}
+aside button{
+    background-color: grey;
+  color: white;
+  border: 0px;
+  padding: 15px;
+  font-family: "EuroStile";
+  font-size: 25px;
+}
+/*-------------------------------------------------------MAIN-------------------------------------------------------*/
+main {
+  grid-area: main;
+}
+main section {
+  display: grid;
+  grid-template-columns: 50% 50%;
+  grid-template-rows: 1fr;
+  grid-template-areas: "izquierda derecha";
+  height: 500px;
+}
+main section.seccion1 div.imagenSeccion1 {
+  display: grid;
+  grid-area: izquierda;
+  background-image: url("../img/image1.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 100%;
+}
+main section.seccion1 div.textoSeccion1 {
+  display: grid;
+  grid-area: derecha;
+  background-color: rgb(255, 255, 255);
+  color: rgb(0, 0, 0);
+  padding: 50px;
+}
+main section.seccion2 div.imagenSeccion2 {
+  display: grid;
+  grid-area: derecha;
+  background-image: url("../img/image2.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 100%;
+}
+main section.seccion2 div.textoSeccion2 {
+  display: grid;
+  grid-area: izquierda;
+  background-color: rgb(255, 255, 255);
+  color: rgb(0, 0, 0);
+  padding: 50px;
+}
+main section.seccion3 div.instalar {
+  display: grid;
+  grid-area: izquierda;
+  background-image: url("../img/image3.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  font-family: "eurostile";
+  font-size: 15px;
+  color: white;
+  text-shadow: 1px 0px 0px black, 0px 1px 0px black, -1px 0px 0px black,
+    0px -1px 0px black;
+  padding-bottom: 20px;
+}
+main section.seccion3 div.instalar button{
+    background-color: grey;
+  color: white;
+  border: 0px;
+  padding: 15px;
+  font-family: "EuroStile";
+  font-size: 15px;
+  width: 150px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+main section.seccion3 div.textoSeccion3 {
+  display: grid;
+  grid-area: derecha;
+  background-color: rgb(255, 255, 255);
+  color: rgb(0, 0, 0);
+  padding: 50px;
+}
+/*-------------------------------------------------------FOOTER-------------------------------------------------------*/
+footer {
+    grid-area: footer;
+  position: relative;
+  width: 100%;
+  background: #8a8a8b;
+  min-height: 150px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+footer h1{
+    font-size: 2rem;
+  color: white;
+  text-shadow: 1px 0px 0px black, 0px 1px 0px black, -1px 0px 0px black,
+    0px -1px 0px black;
+    letter-spacing: 15px;
+    margin-bottom: 5px;
+}
+footer h2{
+    font-size: 1rem;
+  color: white;
+  text-shadow: 1px 0px 0px black, 0px 1px 0px black, -1px 0px 0px black,
+    0px -1px 0px black;
+      margin-bottom: 5px;
+}
+footer h3{
+    font-size: 1rem;
+  color: white;
+  text-shadow: 1px 0px 0px black, 0px 1px 0px black, -1px 0px 0px black,
+    0px -1px 0px black;
+      margin-bottom: 5px;
+}
+footer h4{
+    font-size: 1rem;
+  color: white;
+  text-shadow: 1px 0px 0px black, 0px 1px 0px black, -1px 0px 0px black,
+    0px -1px 0px black;
+}
+/*-------------------------------------------------------MEDIA QUERIES-------------------------------------------------------*/
+
+/* Media Query para Tablet (768px - 1024px) */
+@media (min-width: 768px) and (max-width: 1024px) {
+  /* Estructura general */
+  body {
+    grid-template-columns: 100%;
+    grid-template-rows: auto auto auto auto auto;
+    grid-template-areas:
+      "header"
+      "nav"
+      "aside"
+      "main"
+      "footer";
+    background-size: cover;
+  }
+
+  /* Header */
+  header {
+    width: 100%;
+    padding: 20px 0;
+  }
+  
+  header h1 {
+    font-size: 3rem;
+    letter-spacing: 10px;
+  }
+
+  /* Navegación */
+  nav {
+    width: 100%;
+    padding: 10px 0;
+  }
+  
+  nav ul {
+    width: 100%;
+    justify-content: space-around;
+  }
+  
+  nav ul li {
+    font-size: 18px;
+    margin: 5px;
+  }
+
+  /* Aside */
+  aside {
+    padding: 40px 20px;
+    height: auto;
+  }
+  
+  aside h1 {
+    font-size: 40px;
+    text-align: center;
+  }
+  
+  aside h3 {
+    font-size: 20px;
+    text-align: center;
+  }
+  
+  aside button {
+    font-size: 20px;
+  }
+
+  /* Main */
+  main section {
+    height: auto;
+    min-height: 400px;
+  }
+  
+  main section.seccion1 div.textoSeccion1,
+  main section.seccion2 div.textoSeccion2,
+  main section.seccion3 div.textoSeccion3 {
+    padding: 30px;
+  }
+  
+  main section.seccion3 div.instalar {
+    padding: 30px 20px;
+  }
+  
+  main section.seccion3 div.instalar button {
+    margin-top: 15px;
+  }
+
+  /* Footer */
+  footer {
+    padding: 20px 0;
+  }
+  
+  footer h1 {
+    font-size: 1.8rem;
+    letter-spacing: 10px;
+  }
+}
+
+/* Media Query existente para navegación móvil */
+@media (max-width: 768px) {
+  nav {
+    display: none;
+    flex-direction: column;
+  }
+  .menu-button {
+    display: block;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 10px;
+    background-color: transparent;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+  }
+  #main-nav.nav-visible {
+    display: flex;
+    position: absolute;
+    top: 100px;
+    left: 0;
+    width: 100%;
+    background-color: rgb(187, 187, 187);
+    z-index: 1000;
+  }
+  #main-nav.nav-visible ul {
+    list-style: none;
+    padding: 0;
+    width: 100%;
+    text-align: center;
+  }
+  #main-nav.nav-visible li {
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  #main-nav.nav-visible li:last-child {
+    border-bottom: none;
+  }
+
+  #main-nav.nav-visible a {
+    text-decoration: none;
+    color: white;
+    font-size: 18px;
+    display: block;
+  }
+}
+
+/* Media Query para Móvil (hasta 767px) */
+@media (max-width: 767px) {
+  /* Estructura general */
+  body {
+    grid-template-columns: 100%;
+    grid-template-rows: auto auto auto auto auto;
+    grid-template-areas:
+      "header"
+      "nav"
+      "aside"
+      "main"
+      "footer";
+    background-size: cover;
+  }
+
+  /* Header */
+  header {
+    width: 100%;
+    padding: 15px 0;
+  }
+  
+  header h1 {
+    font-size: 2rem;
+    letter-spacing: 5px;
+    text-align: center;
+  }
+  
+  header h2 {
+    font-size: 0.9rem;
+    text-align: center;
+  }
+
+  /* Aside */
+  aside {
+    padding: 30px 15px;
+    height: auto;
+    text-align: center;
+  }
+  
+  aside h1 {
+    font-size: 30px;
+    padding-bottom: 15px;
+  }
+  
+  aside h3 {
+    font-size: 18px;
+    padding-bottom: 15px;
+  }
+  
+  aside button {
+    font-size: 18px;
+    padding: 12px;
+  }
+
+  /* Main */
+  main section {
+    grid-template-columns: 100%;
+    grid-template-rows: auto auto;
+    grid-template-areas: 
+      "izquierda"
+      "derecha";
+    height: auto;
+  }
+  
+  main section.seccion1 div.imagenSeccion1,
+  main section.seccion2 div.imagenSeccion2 {
+    height: 250px;
+  }
+  
+  main section.seccion2 {
+    grid-template-areas: 
+      "derecha"
+      "izquierda";
+  }
+  
+  main section.seccion1 div.textoSeccion1,
+  main section.seccion2 div.textoSeccion2,
+  main section.seccion3 div.textoSeccion3 {
+    padding: 25px 15px;
+  }
+  
+  main section.seccion3 div.instalar {
+    padding: 25px 15px;
+    height: 250px;
+  }
+  
+  main section.seccion3 div.instalar button {
+    width: 130px;
+    height: 45px;
+    font-size: 14px;
+  }
+
+  /* Footer */
+  footer {
+    padding: 15px 0;
+    min-height: 120px;
+  }
+  
+  footer h1 {
+    font-size: 1.5rem;
+    letter-spacing: 5px;
+  }
+  
+  footer h2,
+  footer h3,
+  footer h4 {
+    font-size: 0.9rem;
+  }
+}

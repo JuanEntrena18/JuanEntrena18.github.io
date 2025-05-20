@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <!--Instrucciones de Instalación de Odoo-->
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Instrucciones de Instalación de Odoo - Software ERP</title>
+    <meta name="description" content="Guía completa de instalación de Odoo ERP" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="./css/odoo.css">
+</head>
+
+<body>
+    <header>
+        <h1>ODOO</h1>
+        <h2>Guía de Instalación del ERP Open Source</h2>
+        <button id="menu-toggle-button" class="menu-button">☰</button>
+    </header>
+    <nav id="main-nav">
+        <ul>
+            <li><a href="index.html">Inicio</a></li>
+            <li><a href="odoo.html">Odoo</a></li>
+            <li><a href="ubuntu.html">Ubuntu</a></li>
+            <li><a href="windows.html">Windows 10/11</a></li>
+            <li><a href="docker.html">Docker</a></li>
+            <button id="theme-toggle" class="theme-toggle" aria-label="Cambiar tema">
+                <span class="sun-icon icon">☀️</span>
+                <span class="moon-icon icon">🌙</span>
+                <span class="slider"></span>
+            </button>
+        </ul>
+    </nav>
+    <aside>
+        <h1>Guía Completa de Instalación de Odoo ERP</h1>
+        <h3>Aprende a instalar y configurar Odoo 17 paso a paso</h3>
+        <button class="boton" id="comenzar-btn">Comenzar ahora</button>
+        <section class="SSOO">
+            <p class="windows"></p>
+        </section>
+    </aside>
+    
+    <main>
+        <section class="seccion1" id="requisitos">
+            <div class="textoSeccion1">
+                <h1>Instalación en Microsoft Windows 10/11</h1>
+                <br>
+                <h2></h2>
+                <ul>
+                    <li>
+                        <h2><strong>Paso 1:</strong> Instalación de Python.</h2>
+                        <br>
+                        <p>Asegúrese de que Python no esté ya instalado en su sistema antes de continuar con la instalación. <br>
+                        Pruebe el comando "Python-version" en el símbolo del sistema. <br>
+                        Si python está instalado en su dispositivo, mostrará algún número de versión, como "Python 3.xx.x". <br>
+                        De lo contrario, recibirá un mensaje de error que dice algo como "'python' no se reconoce como un comando interno o externo, un programa operable o un archivo por lotes". <br>
+                        Para Odoo 17, necesitamos Python 3.10 o la última. <br>
+                        Si su versión es inferior a 3.10 o su máquina no tiene Python, descargue Python desde el sitio web oficial:<br></p>
+                        <pre>
+https://www.python.org/downloads/
+                        </pre>
+                        <img src="./img/python.png" alt="python" width="500" height="350">
+                    </li>
+                    <li>
+                        <h2><strong>Paso 2:</strong> Instalación de PostgreSQL.</h2>
+                        <br>
+                        <p>Para instalar PostgreSQL en su máquina, descargue e instale PostgreSQL directamente desde el sitio web oficial de PostgreSQL</p>
+                        <pre>
+https://www.enterprisedb.com/downloads/postgres-postgresql-downloads
+                        </pre>
+                        <img src="./img/postgreeSQL.png" alt="python" width="500" height="350">
+                        <br>
+                        <p>Después de la instalación de PostgreSQL, habrá un asistente de Stack Builder para instalar componentes adicionales para PostgreSQL. </p>
+                        <br>
+                        <p>En el asistente, seleccione todas las aplicaciones de la categoría "Controladores de base de datos" y, a continuación, complete el asistente.</p>
+                        <br>
+                        <img src="./img/stackbuilder.png" alt="python" width="500" height="350">
+                    </li>
+                    <li>
+                        <h2><strong>Paso 3:</strong> Configuración de pgAdmin4 y PSQL.</h2>
+                        <br>
+                        <p>Al instalar PostgreSQL, ya seleccionamos pgAdmin4 para instalar en la página de selección de componentes del instalador, por lo que pgAdmin ya está instalado en su máquina. <br>
+                        Ábrelo y expande "Servidores" en el Explorador de objetos (pestaña en el lado izquierdo). <br>
+                        A continuación, deberá introducir una contraseña para que pgAdmin sea seguro. <br>
+                        En los Servidores, expanda el Objeto Postgres y luego podrá ver la opción "Inicio de sesión/Roles de grupo". <br>
+                        Haga clic derecho sobre él y cree un nuevo rol.</p>
+                        <br>
+                        <img src="./img/pgAdmin.png" alt="python" width="500" height="350">
+                        <br>
+                        <p>Indique el nombre del rol desde la pestaña "general".</p>
+                        <br>
+                        <img src="./img/pgAdmin2.png" alt="python" width="500" height="350">
+                        <p>Establezca la contraseña desde la pestaña "Definición".</p>
+                        <br>
+                        <br>
+                        <img src="./img/pgAdmin3.png" alt="python" width="500" height="350">
+                        <p>Habilite todas las opciones desde la pestaña "Privilegios".</p>
+                        <br>
+                        <img src="./img/pgAdmin4.png" alt="python" width="500" height="350">
+                        <br>
+                        <p>A continuación, guárdalo.</p>
+                    </li>
+                    <li>
+                        <h2><strong>Paso 4:</strong> Instalación del kit de C++ mediante Visual Studio Tools</h2>
+                        <br>
+                        <p>C++ es un lenguaje fundamental para el desarrollo de aplicaciones de Windows. Visual Studio proporciona un conjunto completo de herramientas y bibliotecas que facilitan a los desarrolladores la creación de aplicaciones, servicios y componentes de escritorio de Windows con C++.
+
+Descargue el instalador de C++ Built Tools directamente desde el sitio web oficial:</p>
+                        <br>
+                        <pre>
+https://visualstudio.microsoft.com/visual-cpp-build-tools/
+                        </pre>
+                        <img src="./img/visualStudio.png" alt="python" width="500" height="350">
+                        <br>
+                        <p>Al instalar el instalador, marque "Desarrollo de escritorio con C++" y seleccione los componentes opcionales como se muestra en la figura.</p>
+                        <br>
+                        <img src="./img/visualStudio1.png" alt="python" width="500" height="350">
+                        <p>A continuación, complete la instalación y reinicie el equipo para realizar los cambios.</p>
+                        <br>
+                    </li>
+                    <li>
+                        <h2><strong>Paso 5:</strong> Obtener Odoo 17 desde Github</h2>
+                        <br>
+                        <p>Descargar Odoo 17 desde Github es un proceso sencillo. Para eso, vaya al sitio web oficial de GitHub:</p>
+                        <br>
+                        <pre>
+https://github.com/odoo/odoo
+                        </pre>
+                        <img src="./img/odooInstall1.png" alt="python" width="500" height="350">
+                        <br>
+                        <p>Extráigalo y guárdelo en un lugar seguro (mejor mantenerlo en el directorio de inicio).</p>
+                        <br>
+                    </li>
+                    <li>
+                        <h2><strong>Paso 6:</strong> Instalación de Pycharm</h2>
+                        <br>
+                        <p>Puede descargar pycharm community desde el sitio web oficial de jetbrains</p>
+                        <br>
+                        <pre>
+https://www.jetbrains.com/pycharm/download/?section=windows
+                        </pre>
+                        <img src="./img/pycham.png" alt="python" width="500" height="350">
+                        <br>
+                        <p>Completa la instalación.</p>
+                        <br>
+                    </li>
+                    <li>
+                        <h2><strong>Paso 7:</strong> Configurar el entorno de desarrollo de Odoo17 en Pycharm</h2>
+                        <br>
+                        <p>Ahora, el paso final para la configuración de Odoo17, es decir, Configurar el entorno.
+                        Para eso, abra el pycharm de las aplicaciones y haga clic en "Abrir proyecto existente".</p>
+                        <br>
+                        <img src="./img/pycharm1.png" alt="python" width="500" height="350">
+                        <br>
+                        <p>Elija la carpeta Odoo17 extraída y haga clic en aceptar.</p>
+                        <br>
+                        <img src="./img/pycharm2.png" alt="python" width="500" height="350">
+                        <br>
+                        <p>Cree un archivo odoo.conf dentro del directorio haciendo clic derecho en la carpeta Odoo-17 desde la pestaña del proyecto (lado izquierdo).</p>
+                        <br>
+                        <img src="./img/pycharm3.png" alt="python" width="500" height="350">
+                        <br>
+                        <p>Pega estos códigos dentro de él.</p>
+                        <pre>
+[options]
+; Is This The Password That Allows Database Operations:
+admin_passwd = admin
+db_host = localhost
+db_port = 5432
+db_user = odoo
+db_password = odoo
+addons_path = /home/user/odoo/addons
+xmlrpc_port = 8017 
+                        </pre>
+                        <br>
+                        <p>Cambie el db_user y db_password que se establece cuando se configura PostgreSQL usando pgAdmin. <br>
+                            Además, cambie la ruta de los complementos al directorio "addons" dentro de la carpeta odoo-17.0 extraída.</p>
+                        <img src="./img/pycharm4.png" alt="python" width="500" height="350">
+                        <br>
+                        <p>A continuación, necesitamos configurar un intérprete de Python. <br>
+                            Para eso, vaya a Configuración -> Configuración del proyecto -> Intérprete de python.</p>
+                            <br>
+                          <img src="./img/pycharm5.png" alt="python" width="500" height="350">
+                        <br>  
+                        <p>Ahora, elija el intérprete como "Intérprete del sistema" como se muestra en la figura y luego haga clic en Aceptar.</p>
+                        <br>
+                        <img src="./img/pycharm7.png" alt="python" width="500" height="350">
+                        <br>
+                        <p>Finalmente, necesitamos crear una configuración para ejecutar la instancia Odoo17. <br>
+                            Para eso, en la opción "Archivo actual" seleccione "Editar configuración".</p>
+                            <br>
+                            <img src="./img/pycharm6.png" alt="python" width="500" height="350">
+                            <br>
+                            <p>Agregue una nueva configuración usando el ícono Más en el panel superior izquierdo y elija Python de las opciones.</p>
+                            <br>
+                            <img src="./img/pycharm8.png" alt="python" width="500" height="350">
+                            <p>Rellene la información necesaria sobre la configuración como se muestra:</p>
+                            <pre>
++ Dar un nombre para la configuración
+
++ Seleccione "Script path" como archivo "odoo-bin" de Odoo-17 extraído (Directorio del proyecto)
+
++ Establezca el intérprete de Python solo si aún no se ha mostrado.
+
++ Directorio de trabajo: elija la carpeta del proyecto extraído
+
++ Parámetros: -c odoo.conf
+
+y, a continuación, haga clic en Aplicar y en Aceptar.  
+                            </pre>
+                            <br>
+                            <p>Sí, ahora podemos ejecutar nuestra instancia de Odoo haciendo clic en el icono de reproducción junto a la opción de configuración o mediante Keyboard Shift+F10.</p>
+                            <img src="./img/pycharm9.png" alt="python" width="500" height="350">
+                            <br>
+                            <p>Es posible que falten algunos paquetes de Python por instalar:</p>
+                            <pre>
+* psycopg2  psycopg2-binario
+
+* PIL PIL-Herramientas
+
+* dateutil dateutils
+
+* Win32service pypiwin32  
+                            </pre>
+                            <br>
+                            <p>Instale las dependencias si fuese necesario.</p>
+                            <br>
+                            <p>Después de agregar los paquetes que faltan, ejecute la instancia una vez más, abra el navegador y pegue la dirección "localhost:8017".</p>
+                            <br>
+                            <img src="./img/odoo_final_win.png" alt="python" width="500" height="350">
+                    </li>
+                </ul>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <h1>ERP Instalación ODOO</h1>
+        <h2>Software de Gestión Empresarial Open Source</h2>
+        <h3>Guía de Instalación y Configuración</h3>
+        <h4>© 2025 - Juan Fco Entrena Garrido</h4>
+    </footer>
+    <script>
+        // Script para navegación suave con enlaces internos
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                target.scrollIntoView({
+                    behavior: 'smooth', // Scroll suave
+                    block: 'start'      // Alinea al inicio de la sección
+                });
+            });
+        });
+
+        // Script para el botón "Comenzar ahora"
+        document.getElementById('comenzar-btn').addEventListener('click', function() {
+            const requisitosSection = document.getElementById('requisitos');
+            requisitosSection.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        });
+
+        // Script para el menú móvil
+        document.getElementById('menu-toggle-button').addEventListener('click', function() {
+            document.getElementById('main-nav').classList.toggle('nav-visible');
+        });
+    </script>
+    <script src="./scripts/theme_toggle.js"></script>
+</body>
+
+</html>
