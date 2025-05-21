@@ -60,7 +60,7 @@ body {
 }
 
 .dark-mode {
-  background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(../img/odoo_banner.png);
+  background-color: #5b3552;
 }
 
 /*-------------------------------------------------------HEADER-------------------------------------------------------*/
@@ -363,6 +363,11 @@ main ul p {
 main img{
   width: 80%;
   height: auto;
+}
+main hr{
+  width: 100%;
+  background-color: #875A7B;
+  margin: 10px 0;
 }
 
 /*-------------------------------------------------------FOOTER-------------------------------------------------------*/
