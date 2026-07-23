@@ -4,286 +4,583 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>StreamDaemon — Open-source stream tools, daemonically good.</title>
+<meta name="description" content="StreamDaemon is a free, open-source, self-hosted toolkit for Twitch: 57+ themed overlays, real-time chat, giveaways, predictions, subathons, anti-bot protection, and analytics.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg: #0a0c0a;
-    --bg-raised: #10130f;
-    --line: #22281f;
-    --green: #6bffb0;
-    --green-dim: #3d7a5a;
+    --bg: #0a0a0f;
+    --bg-raised: #10101a;
+    --bg-card: #0d0d16;
+    --line: #22223a;
+    --line-light: #2e2e4a;
+    --purple: #b48cff;
+    --purple-bright: #d4b8ff;
+    --purple-dim: #6b4d9e;
+    --purple-glow: rgba(180, 140, 255, 0.18);
+    --purple-faint: rgba(180, 140, 255, 0.04);
     --amber: #ffb454;
-    --text: #d7ded4;
-    --text-dim: #7c8a78;
+    --red: #ff6b6b;
+    --text: #d4d4e8;
+    --text-dim: #7a7a9e;
+    --text-bright: #f0f0fa;
     --mono: 'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
     --display: 'Space Grotesk', Inter, ui-sans-serif, system-ui, sans-serif;
+    --radius: 8px;
+    --radius-sm: 4px;
+    --shadow-lg: 0 30px 80px -30px rgba(0,0,0,0.8);
+    --shadow-glow: 0 4px 24px rgba(180, 140, 255, 0.25);
+    --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   *{ box-sizing:border-box; margin:0; padding:0; }
-  html{ scroll-behavior:smooth; }
+  html{ scroll-behavior:smooth; -webkit-text-size-adjust:100%; }
   body{
     background:var(--bg);
     color:var(--text);
     font-family:var(--display);
-    line-height:1.5;
+    line-height:1.6;
     overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
   }
+
   @media (prefers-reduced-motion: reduce){
     *{ animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important; scroll-behavior:auto !important; }
   }
 
   a{ color:inherit; }
-  ::selection{ background:var(--green); color:#04140c; }
+  ::selection{ background:var(--purple); color:#0a0514; }
+  :focus-visible{ outline:2px solid var(--purple); outline-offset:3px; border-radius:2px; }
 
-  /* subtle scanline / grid texture */
+  /* Subtle grid texture */
   body::before{
     content:"";
     position:fixed; inset:0;
     background-image:
-      linear-gradient(rgba(107,255,176,0.025) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(107,255,176,0.025) 1px, transparent 1px);
-    background-size: 42px 42px;
+      linear-gradient(rgba(180,140,255,0.018) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(180,140,255,0.018) 1px, transparent 1px);
+    background-size: 48px 48px;
     pointer-events:none;
     z-index:0;
   }
 
-  .wrap{ max-width:1120px; margin:0 auto; padding:0 28px; position:relative; z-index:1; }
+  /* Ambient glow */
+  body::after{
+    content:"";
+    position:fixed;
+    top:-250px; left:50%;
+    transform:translateX(-50%);
+    width:900px; height:650px;
+    background:radial-gradient(ellipse, rgba(180,140,255,0.05) 0%, rgba(120,60,200,0.02) 40%, transparent 70%);
+    pointer-events:none;
+    z-index:0;
+  }
+
+  .wrap{ max-width:1140px; margin:0 auto; padding:0 24px; position:relative; z-index:1; }
+  @media (min-width:768px){ .wrap{ padding:0 32px; } }
+  @media (min-width:1024px){ .wrap{ padding:0 40px; } }
+
+  /* Skip link */
+  .skip-link{
+    position:absolute; top:-100%; left:16px;
+    background:var(--purple); color:#0a0514;
+    padding:10px 18px; border-radius:var(--radius-sm);
+    font-family:var(--mono); font-size:13px; font-weight:600;
+    z-index:9999; text-decoration:none;
+    transition:top 0.2s;
+  }
+  .skip-link:focus{ top:12px; }
 
   /* ---------- NAV ---------- */
   nav{
-    position:sticky; top:0; z-index:50;
-    background:rgba(10,12,10,0.86);
-    backdrop-filter:blur(8px);
+    position:sticky; top:0; z-index:100;
+    background:rgba(10,10,15,0.88);
+    backdrop-filter:blur(12px) saturate(1.2);
+    -webkit-backdrop-filter:blur(12px) saturate(1.2);
     border-bottom:1px solid var(--line);
   }
   nav .wrap{ display:flex; align-items:center; justify-content:space-between; height:64px; }
-  .brand{ display:flex; align-items:center; gap:10px; font-family:var(--mono); font-weight:600; font-size:15px; letter-spacing:0.02em; }
-  .brand .dot{ width:9px; height:9px; border-radius:50%; background:var(--green); box-shadow:0 0 10px var(--green); animation:pulse 2.2s ease-in-out infinite; }
-  @keyframes pulse{ 0%,100%{opacity:1} 50%{opacity:0.35} }
-  .navlinks{ display:flex; gap:30px; font-family:var(--mono); font-size:13px; color:var(--text-dim); }
-  .navlinks a{ text-decoration:none; transition:color .15s; }
-  .navlinks a:hover{ color:var(--green); }
-  .nav-cta{
-    font-family:var(--mono); font-size:13px; color:var(--bg);
-    background:var(--green); padding:8px 16px; border-radius:3px;
-    text-decoration:none; font-weight:600;
-    border:1px solid var(--green);
-    transition:transform .15s, box-shadow .15s;
+  .brand{ display:flex; align-items:center; gap:10px; font-family:var(--mono); font-weight:600; font-size:15px; letter-spacing:0.02em; text-decoration:none; }
+  .brand .dot{
+    width:9px; height:9px; border-radius:50%;
+    background:var(--purple);
+    box-shadow:0 0 10px var(--purple), 0 0 24px rgba(180,140,255,0.4);
+    animation:pulse 2.2s ease-in-out infinite;
+    flex-shrink:0;
   }
-  .nav-cta:hover{ transform:translateY(-1px); box-shadow:0 4px 18px rgba(107,255,176,0.25); }
-  @media (max-width:760px){ .navlinks{ display:none; } }
+  @keyframes pulse{ 0%,100%{opacity:1; transform:scale(1)} 50%{opacity:0.4; transform:scale(0.85)} }
+
+  .navlinks{ display:flex; gap:28px; font-family:var(--mono); font-size:13px; color:var(--text-dim); }
+  .navlinks a{ text-decoration:none; transition:color var(--transition); position:relative; }
+  .navlinks a::after{ content:""; position:absolute; bottom:-4px; left:0; width:0; height:1px; background:var(--purple); transition:width var(--transition); }
+  .navlinks a:hover{ color:var(--purple); }
+  .navlinks a:hover::after{ width:100%; }
+
+  .nav-cta{
+    font-family:var(--mono); font-size:13px; color:#0a0514;
+    background:var(--purple); padding:8px 18px; border-radius:var(--radius-sm);
+    text-decoration:none; font-weight:600;
+    border:1px solid var(--purple);
+    transition:transform var(--transition), box-shadow var(--transition);
+    white-space:nowrap;
+  }
+  .nav-cta:hover{ transform:translateY(-1px); box-shadow:var(--shadow-glow); }
+
+  /* Mobile menu button */
+  .menu-toggle{
+    display:none;
+    background:none; border:none; cursor:pointer;
+    width:40px; height:40px;
+    flex-direction:column; align-items:center; justify-content:center; gap:5px;
+    border-radius:var(--radius-sm);
+    transition:background var(--transition);
+  }
+  .menu-toggle:hover{ background:rgba(180,140,255,0.08); }
+  .menu-toggle span{
+    display:block; width:20px; height:2px;
+    background:var(--text); border-radius:2px;
+    transition:transform 0.3s, opacity 0.3s;
+  }
+  .menu-toggle.active span:nth-child(1){ transform:rotate(45deg) translate(5px, 5px); }
+  .menu-toggle.active span:nth-child(2){ opacity:0; }
+  .menu-toggle.active span:nth-child(3){ transform:rotate(-45deg) translate(5px, -5px); }
+
+  /* Mobile nav overlay */
+  .mobile-nav{
+    display:none;
+    position:fixed; top:64px; left:0; right:0; bottom:0;
+    background:rgba(10,10,15,0.97);
+    backdrop-filter:blur(16px);
+    -webkit-backdrop-filter:blur(16px);
+    z-index:99;
+    flex-direction:column;
+    padding:32px 24px;
+    gap:8px;
+    opacity:0;
+    transform:translateY(-10px);
+    transition:opacity 0.3s, transform 0.3s;
+  }
+  .mobile-nav.open{ opacity:1; transform:translateY(0); }
+  .mobile-nav a{
+    font-family:var(--mono); font-size:16px; color:var(--text-dim);
+    text-decoration:none; padding:14px 16px;
+    border-radius:var(--radius-sm);
+    transition:color var(--transition), background var(--transition);
+  }
+  .mobile-nav a:hover{ color:var(--purple); background:rgba(180,140,255,0.05); }
+  .mobile-nav .nav-cta{
+    margin-top:16px; text-align:center; padding:14px;
+    font-size:15px; color:#0a0514;
+  }
+
+  @media (max-width:768px){
+    .navlinks{ display:none; }
+    .nav-cta.desktop{ display:none; }
+    .menu-toggle{ display:flex; }
+    .mobile-nav{ display:flex; pointer-events:none; }
+    .mobile-nav.open{ pointer-events:all; }
+  }
 
   /* ---------- HERO ---------- */
-  .hero{ padding:100px 0 70px; position:relative; }
+  .hero{ padding:80px 0 60px; position:relative; }
+  @media (min-width:768px){ .hero{ padding:110px 0 80px; } }
+  @media (min-width:1024px){ .hero{ padding:130px 0 90px; } }
+
   .kicker{
-    font-family:var(--mono); font-size:12px; color:var(--green-dim);
-    letter-spacing:0.12em; text-transform:uppercase; margin-bottom:22px;
+    font-family:var(--mono); font-size:11px; color:var(--purple-dim);
+    letter-spacing:0.14em; text-transform:uppercase; margin-bottom:20px;
     display:flex; align-items:center; gap:10px;
   }
-  .kicker::before{ content:"//"; color:var(--green); }
+  @media (min-width:768px){ .kicker{ font-size:12px; margin-bottom:24px; } }
+  .kicker::before{ content:"//"; color:var(--purple); font-weight:700; }
 
   h1{
-    font-size:clamp(40px, 6.4vw, 78px);
-    font-weight:600;
-    letter-spacing:-0.02em;
-    line-height:1.02;
+    font-size:clamp(32px, 7vw, 78px);
+    font-weight:700;
+    letter-spacing:-0.03em;
+    line-height:1.05;
     max-width:920px;
-    color:#f2f5ef;
+    color:var(--text-bright);
   }
-  h1 .accent{ color:var(--green); }
+  h1 .accent{
+    color:var(--purple);
+    text-shadow:0 0 40px rgba(180,140,255,0.35);
+  }
   .sub{
-    margin-top:26px; max-width:600px; font-size:18px; color:var(--text-dim);
-    line-height:1.6;
+    margin-top:22px; max-width:620px; font-size:16px; color:var(--text-dim);
+    line-height:1.7;
   }
+  @media (min-width:768px){ .sub{ margin-top:28px; font-size:18px; } }
 
-  .hero-cta{ display:flex; gap:14px; margin-top:38px; flex-wrap:wrap; }
+  .hero-cta{ display:flex; gap:12px; margin-top:32px; flex-wrap:wrap; }
+  @media (min-width:768px){ .hero-cta{ gap:14px; margin-top:40px; } }
+
   .btn{
-    font-family:var(--mono); font-size:14px; padding:13px 22px; border-radius:3px;
+    font-family:var(--mono); font-size:13px; padding:12px 20px; border-radius:var(--radius-sm);
     text-decoration:none; display:inline-flex; align-items:center; gap:8px;
-    transition:transform .15s, box-shadow .15s, background .15s;
+    transition:transform var(--transition), box-shadow var(--transition), background var(--transition), border-color var(--transition);
     border:1px solid var(--line);
+    white-space:nowrap;
   }
-  .btn-primary{ background:var(--green); color:#04140c; font-weight:700; border-color:var(--green); }
-  .btn-primary:hover{ transform:translateY(-2px); box-shadow:0 6px 24px rgba(107,255,176,0.28); }
+  @media (min-width:768px){ .btn{ font-size:14px; padding:13px 24px; } }
+  .btn-primary{ background:var(--purple); color:#0a0514; font-weight:700; border-color:var(--purple); }
+  .btn-primary:hover{ transform:translateY(-2px); box-shadow:0 8px 30px rgba(180,140,255,0.35); }
+  .btn-primary:active{ transform:translateY(0); }
   .btn-ghost{ background:transparent; color:var(--text); }
-  .btn-ghost:hover{ border-color:var(--green-dim); color:var(--green); }
+  .btn-ghost:hover{ border-color:var(--purple-dim); color:var(--purple); background:var(--purple-faint); }
 
-  /* ---------- SIGNATURE: boot terminal ---------- */
+  /* ---------- TERMINAL ---------- */
   .terminal{
-    margin-top:64px;
+    margin-top:48px;
     background:var(--bg-raised);
     border:1px solid var(--line);
-    border-radius:8px;
+    border-radius:var(--radius);
     overflow:hidden;
-    box-shadow:0 30px 80px -30px rgba(0,0,0,0.7);
+    box-shadow:var(--shadow-lg), 0 0 60px -20px rgba(180,140,255,0.08);
     max-width:900px;
   }
+  @media (min-width:768px){ .terminal{ margin-top:64px; } }
   .term-bar{
     display:flex; align-items:center; gap:8px;
-    padding:11px 16px; border-bottom:1px solid var(--line);
-    background:#0d100c;
+    padding:12px 16px; border-bottom:1px solid var(--line);
+    background:var(--bg-card);
   }
-  .term-bar span{ width:10px; height:10px; border-radius:50%; background:#2a2f26; }
-  .term-title{ margin-left:8px; font-family:var(--mono); font-size:12px; color:var(--text-dim); }
+  .term-bar span{ width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+  .term-bar span:nth-child(1){ background:#ff5f57; }
+  .term-bar span:nth-child(2){ background:#febc2e; }
+  .term-bar span:nth-child(3){ background:#28c840; }
+  .term-title{ margin-left:10px; font-family:var(--mono); font-size:11px; color:var(--text-dim); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  @media (min-width:768px){ .term-title{ font-size:12px; } }
   .term-body{
-    font-family:var(--mono); font-size:13.5px; padding:22px 24px 26px;
-    color:var(--text-dim); min-height:230px;
+    font-family:var(--mono); font-size:12px; padding:18px 16px 22px;
+    color:var(--text-dim); min-height:200px;
+    overflow-x:auto;
   }
-  .term-body .ok{ color:var(--green); }
+  @media (min-width:768px){ .term-body{ font-size:13.5px; padding:22px 24px 26px; min-height:230px; } }
+  .term-body .ok{ color:var(--purple); }
   .term-body .warn{ color:var(--amber); }
-  .term-body .line{ opacity:0; animation:typein .25s forwards; white-space:pre-wrap; }
+  .term-body .line{ opacity:0; animation:typein 0.3s forwards; white-space:pre-wrap; margin-bottom:4px; }
   .term-body .caret{
-    display:inline-block; width:8px; height:14px; background:var(--green);
+    display:inline-block; width:8px; height:15px; background:var(--purple);
     margin-left:2px; vertical-align:middle; animation:blink 1s step-end infinite;
   }
   @keyframes typein{ to{ opacity:1; } }
   @keyframes blink{ 50%{ opacity:0; } }
 
-  /* ---------- COMPARISON ---------- */
-  section{ padding:90px 0; border-bottom:1px solid var(--line); }
-  .section-head{ max-width:640px; margin-bottom:48px; }
-  .eyebrow{ font-family:var(--mono); font-size:12px; color:var(--green-dim); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:14px; }
-  .eyebrow::before{ content:"$ "; color:var(--green); }
-  h2{ font-size:clamp(28px,3.6vw,42px); font-weight:600; letter-spacing:-0.01em; color:#f2f5ef; }
-  .section-sub{ color:var(--text-dim); margin-top:14px; font-size:16px; max-width:560px; }
+  /* ---------- SECTIONS ---------- */
+  section{ padding:60px 0; border-bottom:1px solid var(--line); }
+  @media (min-width:768px){ section{ padding:90px 0; } }
+  @media (min-width:1024px){ section{ padding:100px 0; } }
 
-  table.cmp{ width:100%; border-collapse:collapse; font-family:var(--mono); font-size:13.5px; }
-  table.cmp th, table.cmp td{ padding:14px 16px; border-bottom:1px solid var(--line); text-align:center; }
-  table.cmp th{ color:var(--text-dim); font-weight:500; text-transform:uppercase; font-size:11.5px; letter-spacing:0.06em; }
-  table.cmp td:first-child, table.cmp th:first-child{ text-align:left; color:var(--text); }
-  table.cmp th:nth-child(2){ color:var(--green); }
-  td.yes{ color:var(--green); }
-  td.no{ color:#5a4a4a; }
-  table.cmp tbody tr:hover{ background:rgba(107,255,176,0.03); }
+  .section-head{ max-width:660px; margin-bottom:36px; }
+  @media (min-width:768px){ .section-head{ margin-bottom:52px; } }
+  .eyebrow{ font-family:var(--mono); font-size:11px; color:var(--purple-dim); text-transform:uppercase; letter-spacing:0.12em; margin-bottom:14px; }
+  @media (min-width:768px){ .eyebrow{ font-size:12px; } }
+  .eyebrow::before{ content:"$ "; color:var(--purple); }
+  h2{ font-size:clamp(24px, 4vw, 42px); font-weight:700; letter-spacing:-0.02em; color:var(--text-bright); line-height:1.15; }
+  .section-sub{ color:var(--text-dim); margin-top:14px; font-size:15px; max-width:560px; line-height:1.65; }
+  @media (min-width:768px){ .section-sub{ font-size:16px; } }
+  .section-sub a{ color:var(--purple); text-decoration:underline; text-underline-offset:3px; }
+  .section-sub a:hover{ text-decoration-color:var(--purple-bright); }
 
-  /* ---------- FEATURES ---------- */
-  .grid{ display:grid; grid-template-columns:repeat(3, 1fr); gap:1px; background:var(--line); border:1px solid var(--line); }
-  @media (max-width:860px){ .grid{ grid-template-columns:repeat(2,1fr); } }
-  @media (max-width:560px){ .grid{ grid-template-columns:1fr; } }
-  .card{ background:var(--bg); padding:30px 26px; transition:background .2s; }
-  .card:hover{ background:var(--bg-raised); }
-  .card .tag{ font-family:var(--mono); font-size:11px; color:var(--green-dim); text-transform:uppercase; letter-spacing:0.08em; }
-  .card h3{ font-size:19px; font-weight:600; margin-top:10px; color:#f2f5ef; }
-  .card p{ font-size:14px; color:var(--text-dim); margin-top:10px; line-height:1.55; }
-
-  /* ---------- OVERLAY STRIP ---------- */
-  .strip{
-    display:flex; gap:10px; overflow-x:auto; padding-bottom:8px; margin-top:40px;
+  /* ---------- COMPARISON TABLE ---------- */
+  .table-wrap{
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+    border:1px solid var(--line);
+    border-radius:var(--radius);
     scrollbar-width:thin;
+    scrollbar-color:var(--purple-dim) var(--bg);
   }
+  .table-wrap::-webkit-scrollbar{ height:6px; }
+  .table-wrap::-webkit-scrollbar-track{ background:var(--bg); }
+  .table-wrap::-webkit-scrollbar-thumb{ background:var(--purple-dim); border-radius:3px; }
+
+  table.cmp{ width:100%; border-collapse:collapse; font-family:var(--mono); font-size:12px; min-width:600px; }
+  @media (min-width:768px){ table.cmp{ font-size:13.5px; } }
+  table.cmp th, table.cmp td{ padding:12px 14px; border-bottom:1px solid var(--line); text-align:center; }
+  @media (min-width:768px){ table.cmp th, table.cmp td{ padding:14px 18px; } }
+  table.cmp th{ color:var(--text-dim); font-weight:500; text-transform:uppercase; font-size:10.5px; letter-spacing:0.06em; background:var(--bg-card); position:sticky; top:0; }
+  @media (min-width:768px){ table.cmp th{ font-size:11.5px; } }
+  table.cmp td:first-child, table.cmp th:first-child{ text-align:left; color:var(--text); font-weight:500; }
+  table.cmp th:nth-child(2){ color:var(--purple); }
+  td.yes{ color:var(--purple); font-weight:600; }
+  td.no{ color:#4a4a5e; }
+  table.cmp tbody tr{ transition:background var(--transition); }
+  table.cmp tbody tr:hover{ background:rgba(180,140,255,0.03); }
+  table.cmp tbody tr:last-child td{ border-bottom:none; }
+
+  /* ---------- FEATURES GRID ---------- */
+  .grid{
+    display:grid; grid-template-columns:1fr; gap:1px;
+    background:var(--line); border:1px solid var(--line); border-radius:var(--radius);
+    overflow:hidden;
+  }
+  @media (min-width:600px){ .grid{ grid-template-columns:repeat(2,1fr); } }
+  @media (min-width:900px){ .grid{ grid-template-columns:repeat(3,1fr); } }
+  .card{
+    background:var(--bg); padding:26px 22px;
+    transition:background var(--transition), transform var(--transition);
+    position:relative;
+  }
+  @media (min-width:768px){ .card{ padding:32px 28px; } }
+  .card:hover{ background:var(--bg-raised); }
+  .card::before{
+    content:"";
+    position:absolute; top:0; left:0; right:0; height:2px;
+    background:linear-gradient(90deg, transparent, var(--purple), transparent);
+    opacity:0; transition:opacity var(--transition);
+  }
+  .card:hover::before{ opacity:1; }
+  .card .tag{ font-family:var(--mono); font-size:10px; color:var(--purple-dim); text-transform:uppercase; letter-spacing:0.1em; }
+  @media (min-width:768px){ .card .tag{ font-size:11px; } }
+  .card h3{ font-size:17px; font-weight:600; margin-top:10px; color:var(--text-bright); line-height:1.3; }
+  @media (min-width:768px){ .card h3{ font-size:19px; } }
+  .card p{ font-size:13px; color:var(--text-dim); margin-top:10px; line-height:1.6; }
+  @media (min-width:768px){ .card p{ font-size:14px; } }
+
+  /* ---------- CHIPS ---------- */
+  .strip{
+    display:flex; gap:10px; overflow-x:auto; padding:16px 0 8px; margin-top:32px;
+    scrollbar-width:thin;
+    scrollbar-color:var(--purple-dim) transparent;
+    -webkit-overflow-scrolling:touch;
+  }
+  .strip::-webkit-scrollbar{ height:4px; }
+  .strip::-webkit-scrollbar-thumb{ background:var(--purple-dim); border-radius:2px; }
   .chip{
-    font-family:var(--mono); font-size:12.5px; white-space:nowrap;
+    font-family:var(--mono); font-size:11.5px; white-space:nowrap;
     border:1px solid var(--line); border-radius:20px; padding:8px 16px;
-    color:var(--text-dim);
+    color:var(--text-dim); transition:border-color var(--transition), color var(--transition), background var(--transition);
+    flex-shrink:0;
   }
-  .chip.on{ color:var(--green); border-color:var(--green-dim); }
+  @media (min-width:768px){ .chip{ font-size:12.5px; } }
+  .chip:hover{ border-color:var(--purple-dim); color:var(--text); }
+  .chip.on{ color:var(--purple); border-color:var(--purple-dim); background:var(--purple-faint); }
 
   /* ---------- STACK ---------- */
-  .stack-list{ font-family:var(--mono); font-size:14px; }
-  .stack-row{ display:grid; grid-template-columns:140px 1fr; gap:20px; padding:14px 0; border-bottom:1px solid var(--line); }
-  .stack-row .layer{ color:var(--green-dim); }
+  .stack-list{ font-family:var(--mono); font-size:13px; }
+  @media (min-width:768px){ .stack-list{ font-size:14px; } }
+  .stack-row{
+    display:grid; grid-template-columns:1fr; gap:6px;
+    padding:16px 0; border-bottom:1px solid var(--line);
+  }
+  @media (min-width:600px){ .stack-row{ grid-template-columns:140px 1fr; gap:20px; padding:14px 0; } }
+  .stack-row .layer{ color:var(--purple-dim); font-size:11px; text-transform:uppercase; letter-spacing:0.08em; }
+  @media (min-width:600px){ .stack-row .layer{ font-size:inherit; text-transform:none; letter-spacing:normal; } }
   .stack-row .val{ color:var(--text); }
 
   /* ---------- QUICKSTART ---------- */
-  .tabs{ display:flex; gap:8px; margin-bottom:0; }
+  .tabs{ display:flex; gap:6px; margin-bottom:0; flex-wrap:wrap; }
   .tab{
-    font-family:var(--mono); font-size:13px; padding:10px 18px; cursor:pointer;
+    font-family:var(--mono); font-size:12px; padding:10px 16px; cursor:pointer;
     background:var(--bg-raised); border:1px solid var(--line); border-bottom:none;
-    color:var(--text-dim); border-radius:6px 6px 0 0;
+    color:var(--text-dim); border-radius:var(--radius) var(--radius) 0 0;
+    transition:color var(--transition), background var(--transition);
+    user-select:none;
   }
-  .tab.active{ color:var(--green); background:#0d100c; }
+  @media (min-width:768px){ .tab{ font-size:13px; padding:10px 20px; } }
+  .tab:hover{ color:var(--text); }
+  .tab.active{ color:var(--purple); background:var(--bg-card); border-color:var(--line-light); }
   .code-block{
-    background:#0d100c; border:1px solid var(--line); border-radius:0 6px 6px 6px;
-    padding:22px 24px; font-family:var(--mono); font-size:13.5px; color:var(--text-dim);
-    overflow-x:auto; line-height:1.8;
+    background:var(--bg-card); border:1px solid var(--line); border-radius:0 var(--radius) var(--radius) var(--radius);
+    padding:20px 18px; font-family:var(--mono); font-size:12px; color:var(--text-dim);
+    overflow-x:auto; line-height:1.9;
+    -webkit-overflow-scrolling:touch;
   }
-  .code-block .cmt{ color:#4a5346; }
-  .code-block .gr{ color:var(--green); }
+  @media (min-width:768px){ .code-block{ padding:24px 28px; font-size:13.5px; } }
+  .code-block .cmt{ color:#4a4a6a; }
+  .code-block .gr{ color:var(--purple); }
 
   /* ---------- ROADMAP ---------- */
   .road{ display:flex; flex-direction:column; }
-  .road-item{ display:flex; align-items:center; gap:18px; padding:16px 0; border-bottom:1px solid var(--line); font-family:var(--mono); font-size:14px; }
-  .road-item .status{ font-size:11px; padding:4px 10px; border-radius:20px; border:1px solid var(--green-dim); color:var(--green-dim); text-transform:uppercase; letter-spacing:0.05em; }
+  .road-item{
+    display:flex; align-items:center; gap:14px; padding:16px 0;
+    border-bottom:1px solid var(--line); font-family:var(--mono); font-size:13px;
+    flex-wrap:wrap;
+  }
+  @media (min-width:768px){ .road-item{ gap:18px; font-size:14px; flex-wrap:nowrap; } }
+  .road-item .status{
+    font-size:10px; padding:4px 10px; border-radius:20px;
+    border:1px solid var(--purple-dim); color:var(--purple-dim);
+    text-transform:uppercase; letter-spacing:0.06em;
+    white-space:nowrap; flex-shrink:0;
+  }
+  @media (min-width:768px){ .road-item .status{ font-size:11px; } }
+  .road-item .road-text{ color:var(--text); }
 
-  /* ---------- FOOTER / CTA ---------- */
-  .cta-final{ text-align:center; padding:110px 0; border-bottom:none; }
-  .cta-final h2{ max-width:600px; margin:0 auto 18px; }
-  .cta-final p{ color:var(--text-dim); max-width:480px; margin:0 auto 36px; }
-  footer{ padding:36px 0; }
-  footer .wrap{ display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px; font-family:var(--mono); font-size:12.5px; color:var(--text-dim); }
-  footer a{ text-decoration:none; }
-  footer a:hover{ color:var(--green); }
+  /* ---------- CTA FINAL ---------- */
+  .cta-final{ text-align:center; padding:80px 0; border-bottom:none; }
+  @media (min-width:768px){ .cta-final{ padding:120px 0; } }
+  .cta-final h2{ max-width:620px; margin:0 auto 18px; }
+  .cta-final p{ color:var(--text-dim); max-width:480px; margin:0 auto 36px; font-size:15px; }
+  .cta-final .hero-cta{ justify-content:center; }
 
-  .fade-up{ opacity:0; transform:translateY(16px); transition:opacity .6s ease, transform .6s ease; }
+  /* ---------- FOOTER ---------- */
+  footer{ padding:32px 0; border-top:1px solid var(--line); }
+  footer .wrap{
+    display:flex; justify-content:space-between; align-items:center;
+    flex-wrap:wrap; gap:14px;
+    font-family:var(--mono); font-size:11.5px; color:var(--text-dim);
+  }
+  @media (min-width:768px){ footer .wrap{ font-size:12.5px; } }
+  footer a{ text-decoration:none; transition:color var(--transition); }
+  footer a:hover{ color:var(--purple); }
+
+  /* ---------- BACK TO TOP ---------- */
+  .back-top{
+    position:fixed; bottom:24px; right:24px;
+    width:44px; height:44px;
+    background:var(--bg-raised); border:1px solid var(--line);
+    border-radius:50%; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    color:var(--text-dim); font-size:18px;
+    opacity:0; transform:translateY(10px);
+    transition:opacity 0.3s, transform 0.3s, border-color var(--transition), color var(--transition);
+    z-index:80;
+    pointer-events:none;
+  }
+  .back-top.visible{ opacity:1; transform:translateY(0); pointer-events:all; }
+  .back-top:hover{ border-color:var(--purple-dim); color:var(--purple); box-shadow:var(--shadow-glow); }
+
+  /* ---------- ANIMATIONS ---------- */
+  .fade-up{ opacity:0; transform:translateY(20px); transition:opacity 0.7s ease, transform 0.7s ease; }
   .fade-up.in{ opacity:1; transform:none; }
+  .fade-up-delay-1{ transition-delay:0.1s; }
+  .fade-up-delay-2{ transition-delay:0.2s; }
+  .fade-up-delay-3{ transition-delay:0.3s; }
+
+  /* ---------- STATS BAR ---------- */
+  .stats-bar{
+    display:grid; grid-template-columns:repeat(2, 1fr); gap:1px;
+    background:var(--line); border:1px solid var(--line); border-radius:var(--radius);
+    overflow:hidden; margin-top:48px;
+  }
+  @media (min-width:600px){ .stats-bar{ grid-template-columns:repeat(4, 1fr); } }
+  .stat{
+    background:var(--bg); padding:24px 20px; text-align:center;
+    transition:background var(--transition);
+  }
+  .stat:hover{ background:var(--bg-raised); }
+  .stat .num{
+    font-family:var(--mono); font-size:clamp(24px, 4vw, 36px);
+    font-weight:700; color:var(--purple);
+    text-shadow:0 0 20px rgba(180,140,255,0.25);
+  }
+  .stat .label{
+    font-family:var(--mono); font-size:11px; color:var(--text-dim);
+    text-transform:uppercase; letter-spacing:0.08em; margin-top:6px;
+  }
+
+  /* ---------- RESPONSIVE UTILITIES ---------- */
+  @media (max-width:480px){
+    .hero-cta{ flex-direction:column; }
+    .hero-cta .btn{ justify-content:center; width:100%; }
+    .cta-final .hero-cta{ flex-direction:column; align-items:center; }
+    .cta-final .hero-cta .btn{ width:100%; max-width:300px; justify-content:center; }
+  }
+
+  /* Print styles */
+  @media print{
+    body::before, body::after{ display:none; }
+    nav, .back-top, .menu-toggle{ display:none; }
+    .fade-up{ opacity:1; transform:none; }
+  }
 </style>
 </head>
 <body>
 
-<nav>
+<a href="#main" class="skip-link">Skip to content</a>
+
+<nav aria-label="Main navigation">
   <div class="wrap">
-    <div class="brand"><span class="dot"></span>StreamDaemon</div>
-    <div class="navlinks">
+    <a href="#" class="brand" aria-label="StreamDaemon home"><span class="dot" aria-hidden="true"></span>StreamDaemon</a>
+    <div class="navlinks" role="navigation">
       <a href="#why">why</a>
       <a href="#features">features</a>
       <a href="#stack">stack</a>
       <a href="#quickstart">quick start</a>
       <a href="#roadmap">roadmap</a>
     </div>
-    <a class="nav-cta" href="https://github.com/JuanEntrena18/StreamDaemon/releases" target="_blank" rel="noopener">Download</a>
+    <a class="nav-cta desktop" href="https://github.com/JuanEntrena18/StreamDaemon/releases" target="_blank" rel="noopener">↓ Download</a>
+    <button class="menu-toggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="mobileNav">
+      <span></span><span></span><span></span>
+    </button>
   </div>
 </nav>
 
+<div class="mobile-nav" id="mobileNav" role="navigation" aria-label="Mobile navigation">
+  <a href="#why">why</a>
+  <a href="#features">features</a>
+  <a href="#stack">stack</a>
+  <a href="#quickstart">quick start</a>
+  <a href="#roadmap">roadmap</a>
+  <a class="nav-cta" href="https://github.com/JuanEntrena18/StreamDaemon/releases" target="_blank" rel="noopener">↓ Download for Windows</a>
+</div>
+
+<main id="main">
 <header class="hero">
   <div class="wrap">
-    <div class="kicker">systemd-style stream control, running on your machine</div>
-    <h1>A daemon that <span class="accent">runs your stream</span>,<br>not the other way around.</h1>
-    <p class="sub">StreamDaemon is a free, open-source, self-hosted toolkit for Twitch: 57+ themed overlays, real-time chat, giveaways, predictions, subathons, anti-bot protection, and analytics — all in one local app. No subscriptions. No cloud. Your data stays on your machine.</p>
-    <div class="hero-cta">
+    <div class="kicker fade-up">systemd-style stream control, running on your machine</div>
+    <h1 class="fade-up fade-up-delay-1">A daemon that <span class="accent">runs your stream</span>,<br>not the other way around.</h1>
+    <p class="sub fade-up fade-up-delay-2">StreamDaemon is a free, open-source, self-hosted toolkit for Twitch: 57+ themed overlays, real-time chat, giveaways, predictions, subathons, anti-bot protection, and analytics — all in one local app. No subscriptions. No cloud. Your data stays on your machine.</p>
+    <div class="hero-cta fade-up fade-up-delay-3">
       <a class="btn btn-primary" href="https://github.com/JuanEntrena18/StreamDaemon/releases" target="_blank" rel="noopener">↓ Download for Windows</a>
       <a class="btn btn-ghost" href="#quickstart">Self-host on Linux</a>
       <a class="btn btn-ghost" href="https://buymeacoffee.com/jentrena" target="_blank" rel="noopener">☕ Support the project</a>
     </div>
 
-    <div class="terminal fade-up" id="bootTerm">
-      <div class="term-bar"><span></span><span></span><span></span><div class="term-title">streamdaemon.service — journalctl -f</div></div>
-      <div class="term-body" id="termBody"></div>
+    <div class="terminal fade-up" id="bootTerm" role="img" aria-label="Terminal showing StreamDaemon boot sequence">
+      <div class="term-bar" aria-hidden="true"><span></span><span></span><span></span><div class="term-title">streamdaemon.service — journalctl -f</div></div>
+      <div class="term-body" id="termBody" aria-hidden="true"></div>
+    </div>
+
+    <div class="stats-bar fade-up">
+      <div class="stat"><div class="num">57+</div><div class="label">Overlays</div></div>
+      <div class="stat"><div class="num">8</div><div class="label">Themes</div></div>
+      <div class="stat"><div class="num">5</div><div class="label">Languages</div></div>
+      <div class="stat"><div class="num">$0</div><div class="label">Forever</div></div>
     </div>
   </div>
 </header>
 
-<section id="why">
+<section id="why" aria-labelledby="why-title">
   <div class="wrap">
-    <div class="section-head">
+    <div class="section-head fade-up">
       <div class="eyebrow">why-streamdaemon</div>
-      <h2>Most stream tools rent you your own setup.</h2>
+      <h2 id="why-title">Most stream tools rent you your own setup.</h2>
       <p class="section-sub">StreamDaemon runs as a local process on hardware you own. No login wall, no vendor lock-in, no monthly fee to keep your overlays alive.</p>
     </div>
-    <table class="cmp">
-      <thead>
-        <tr><th>Capability</th><th>StreamDaemon</th><th>StreamElements</th><th>Streamlabs</th><th>Meld Studio</th></tr>
-      </thead>
-      <tbody>
-        <tr><td>Free &amp; open source</td><td class="yes">✓</td><td class="no">✕</td><td class="no">✕</td><td class="no">✕</td></tr>
-        <tr><td>Runs locally</td><td class="yes">✓</td><td class="no">✕</td><td class="yes">✓</td><td class="yes">✓</td></tr>
-        <tr><td>No account required</td><td class="yes">✓</td><td class="no">✕</td><td class="no">✕</td><td class="no">✕</td></tr>
-        <tr><td>57+ themed overlays</td><td class="yes">✓</td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr>
-        <tr><td>Built-in anti-bot</td><td class="yes">✓</td><td class="no">✕</td><td class="yes">✓</td><td class="no">✕</td></tr>
-        <tr><td>Custom commands</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="no">✕</td></tr>
-        <tr><td>Subathon system</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="no">✕</td></tr>
-      </tbody>
-    </table>
+    <div class="table-wrap fade-up">
+      <table class="cmp" role="table" aria-label="Feature comparison between StreamDaemon and alternatives">
+        <thead>
+          <tr><th scope="col">Capability</th><th scope="col">StreamDaemon</th><th scope="col">StreamElements</th><th scope="col">Streamlabs</th><th scope="col">Meld Studio</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Free &amp; open source</td><td class="yes">✓</td><td class="no">✕</td><td class="no">✕</td><td class="no">✕</td></tr>
+          <tr><td>Runs locally</td><td class="yes">✓</td><td class="no">✕</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+          <tr><td>No account required</td><td class="yes">✓</td><td class="no">✕</td><td class="no">✕</td><td class="no">✕</td></tr>
+          <tr><td>57+ themed overlays</td><td class="yes">✓</td><td class="no">—</td><td class="no">—</td><td class="no">—</td></tr>
+          <tr><td>Built-in anti-bot</td><td class="yes">✓</td><td class="no">✕</td><td class="yes">✓</td><td class="no">✕</td></tr>
+          <tr><td>Custom commands</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="no">✕</td></tr>
+          <tr><td>Subathon system</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="no">✕</td></tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </section>
 
-<section id="features">
+<section id="features" aria-labelledby="features-title">
   <div class="wrap">
-    <div class="section-head">
+    <div class="section-head fade-up">
       <div class="eyebrow">features --list</div>
-      <h2>Everything a stream process needs to stay alive.</h2>
+      <h2 id="features-title">Everything a stream process needs to stay alive.</h2>
       <p class="section-sub">Every module talks over Socket.IO in real time, so what happens in chat shows up on screen instantly.</p>
     </div>
 
-    <div class="grid">
+    <div class="grid fade-up">
       <div class="card">
         <div class="tag">Overlays</div>
         <h3>57 standalone overlays</h3>
@@ -331,25 +628,25 @@
       </div>
     </div>
 
-    <div class="strip">
-      <span class="chip on">Subathon timer</span>
-      <span class="chip on">EventSub notifications</span>
-      <span class="chip on">Bitrate calculator</span>
-      <span class="chip on">Social overlay</span>
-      <span class="chip on">Command palette (Ctrl+K)</span>
-      <span class="chip on">Moderation panel</span>
-      <span class="chip on">5 languages: EN·ES·FR·DE·IT</span>
+    <div class="strip fade-up" role="list" aria-label="Additional features">
+      <span class="chip on" role="listitem">Subathon timer</span>
+      <span class="chip on" role="listitem">EventSub notifications</span>
+      <span class="chip on" role="listitem">Bitrate calculator</span>
+      <span class="chip on" role="listitem">Social overlay</span>
+      <span class="chip on" role="listitem">Command palette (Ctrl+K)</span>
+      <span class="chip on" role="listitem">Moderation panel</span>
+      <span class="chip on" role="listitem">5 languages: EN·ES·FR·DE·IT</span>
     </div>
   </div>
 </section>
 
-<section id="stack">
+<section id="stack" aria-labelledby="stack-title">
   <div class="wrap">
-    <div class="section-head">
+    <div class="section-head fade-up">
       <div class="eyebrow">ps aux | grep streamdaemon</div>
-      <h2>Built on a stack that stays out of your way.</h2>
+      <h2 id="stack-title">Built on a stack that stays out of your way.</h2>
     </div>
-    <div class="stack-list">
+    <div class="stack-list fade-up">
       <div class="stack-row"><div class="layer">frontend</div><div class="val">React 18 · Vite · Framer Motion · CSS Modules</div></div>
       <div class="stack-row"><div class="layer">backend</div><div class="val">Node.js · Fastify · Socket.IO · Twurple</div></div>
       <div class="stack-row"><div class="layer">database</div><div class="val">SQLite · Prisma ORM</div></div>
@@ -359,53 +656,57 @@
   </div>
 </section>
 
-<section id="quickstart">
+<section id="quickstart" aria-labelledby="quickstart-title">
   <div class="wrap">
-    <div class="section-head">
+    <div class="section-head fade-up">
       <div class="eyebrow">quick-start --exec</div>
-      <h2>Two ways to run the daemon.</h2>
-      <p class="section-sub">Zero-config on Windows, or self-hosted anywhere Node runs. You'll need a free <a href="https://dev.twitch.tv/console" target="_blank" rel="noopener" style="color:var(--green)">Twitch Developer Application</a> either way.</p>
+      <h2 id="quickstart-title">Two ways to run the daemon.</h2>
+      <p class="section-sub">Zero-config on Windows, or self-hosted anywhere Node runs. You'll need a free <a href="https://dev.twitch.tv/console" target="_blank" rel="noopener">Twitch Developer Application</a> either way.</p>
     </div>
 
-    <div class="tabs">
-      <div class="tab active" data-tab="win">windows</div>
-      <div class="tab" data-tab="linux">linux / self-hosted</div>
-    </div>
-    <div class="code-block" id="tabContent">
+    <div class="fade-up">
+      <div class="tabs" role="tablist" aria-label="Installation method">
+        <div class="tab active" data-tab="win" role="tab" aria-selected="true" tabindex="0">windows</div>
+        <div class="tab" data-tab="linux" role="tab" aria-selected="false" tabindex="0">linux / self-hosted</div>
+      </div>
+      <div class="code-block" id="tabContent" role="tabpanel" aria-label="Installation instructions">
 <span class="cmt"># Zero configuration</span>
 1. Download the latest <span class="gr">.exe</span> from Releases
 2. Run it
 3. You're live
+      </div>
     </div>
   </div>
 </section>
 
-<section id="roadmap">
+<section id="roadmap" aria-labelledby="roadmap-title">
   <div class="wrap">
-    <div class="section-head">
+    <div class="section-head fade-up">
       <div class="eyebrow">roadmap --planned</div>
-      <h2>What's queued up next.</h2>
+      <h2 id="roadmap-title">What's queued up next.</h2>
     </div>
-    <div class="road">
-      <div class="road-item"><span class="status">planned</span> Visual Overlay Builder — drag &amp; drop</div>
-      <div class="road-item"><span class="status">planned</span> AI Overlay Generator</div>
-      <div class="road-item"><span class="status">planned</span> Stream Deck integration</div>
-      <div class="road-item"><span class="status">planned</span> TikTok clip auto-export</div>
+    <div class="road fade-up">
+      <div class="road-item"><span class="status">planned</span><span class="road-text">Visual Overlay Builder — drag &amp; drop</span></div>
+      <div class="road-item"><span class="status">planned</span><span class="road-text">AI Overlay Generator</span></div>
+      <div class="road-item"><span class="status">planned</span><span class="road-text">Stream Deck integration</span></div>
+      <div class="road-item"><span class="status">planned</span><span class="road-text">TikTok clip auto-export</span></div>
+      <div class="road-item"><span class="status">planned</span><span class="road-text">Multi-platform streaming (YouTube, Kick)</span></div>
     </div>
   </div>
 </section>
 
-<section class="cta-final" style="border-bottom:none;">
+<section class="cta-final" aria-labelledby="cta-title">
   <div class="wrap">
-    <div class="eyebrow" style="justify-content:center; display:flex;">exit code 0</div>
-    <h2>Free, open-source, self-hosted.<br>Ready when you are.</h2>
-    <p>AGPL-3.0 licensed. One star so far — help it grow.</p>
-    <div class="hero-cta" style="justify-content:center;">
-      <a class="btn btn-primary" href="https://github.com/JuanEntrena18/StreamDaemon" target="_blank" rel="noopener">View on GitHub</a>
+    <div class="eyebrow fade-up" style="justify-content:center; display:flex;">exit code 0</div>
+    <h2 id="cta-title" class="fade-up">Free, open-source, self-hosted.<br>Ready when you are.</h2>
+    <p class="fade-up">AGPL-3.0 licensed. Built by the community, for the community.</p>
+    <div class="hero-cta fade-up">
+      <a class="btn btn-primary" href="https://github.com/JuanEntrena18/StreamDaemon" target="_blank" rel="noopener">★ View on GitHub</a>
       <a class="btn btn-ghost" href="https://github.com/JuanEntrena18/StreamDaemon/releases" target="_blank" rel="noopener">Get the latest release</a>
     </div>
   </div>
 </section>
+</main>
 
 <footer>
   <div class="wrap">
@@ -417,10 +718,46 @@
   </div>
 </footer>
 
+<button class="back-top" aria-label="Back to top" title="Back to top">↑</button>
+
 <script>
-  // Boot log animation
+(function(){
+  'use strict';
+
+  // ===== Mobile Menu =====
+  const menuToggle = document.querySelector('.menu-toggle');
+  const mobileNav = document.getElementById('mobileNav');
+
+  menuToggle.addEventListener('click', () => {
+    const isOpen = mobileNav.classList.contains('open');
+    mobileNav.classList.toggle('open');
+    menuToggle.classList.toggle('active');
+    menuToggle.setAttribute('aria-expanded', !isOpen);
+    document.body.style.overflow = isOpen ? '' : 'hidden';
+  });
+
+  mobileNav.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+      mobileNav.classList.remove('open');
+      menuToggle.classList.remove('active');
+      menuToggle.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+    });
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && mobileNav.classList.contains('open')) {
+      mobileNav.classList.remove('open');
+      menuToggle.classList.remove('active');
+      menuToggle.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+      menuToggle.focus();
+    }
+  });
+
+  // ===== Boot log animation =====
   const lines = [
-    { t: '[    0.001] ', c: '' , m: 'systemd[1]: Starting StreamDaemon Service...' },
+    { t: '[    0.001] ', c: '',   m: 'systemd[1]: Starting StreamDaemon Service...' },
     { t: '[    0.184] ', c: 'ok', m: 'Loaded 57 overlay modules' },
     { t: '[    0.221] ', c: 'ok', m: 'twitch-irc: connected as yourchannel' },
     { t: '[    0.340] ', c: 'ok', m: 'anti-bot: rate limiting active' },
@@ -428,53 +765,89 @@
     { t: '[    0.500] ', c: 'ok', m: 'streamdaemon.service: reached target ready' }
   ];
   const body = document.getElementById('termBody');
-  let delay = 150;
-  lines.forEach((l, i) => {
+  let delay = 300;
+  lines.forEach((l) => {
     const div = document.createElement('div');
     div.className = 'line';
     div.style.animationDelay = delay + 'ms';
     const cls = l.c === 'ok' ? 'ok' : (l.c === 'warn' ? 'warn' : '');
-    div.innerHTML = `<span style="color:#4a5346">${l.t}</span><span class="${cls}">${l.m}</span>`;
+    div.innerHTML = '<span style="color:#4a4a6a">' + l.t + '</span><span class="' + cls + '">' + l.m + '</span>';
     body.appendChild(div);
-    delay += 420;
+    delay += 450;
   });
   setTimeout(() => {
     const prompt = document.createElement('div');
     prompt.className = 'line';
     prompt.style.opacity = '1';
-    prompt.innerHTML = `<span class="ok">$</span> ready for stream<span class="caret"></span>`;
+    prompt.innerHTML = '<span class="ok">$</span> ready for stream<span class="caret"></span>';
     body.appendChild(prompt);
   }, delay + 200);
 
-  // Tabs
+  // ===== Tabs =====
   const tabData = {
-    win: `<span class="cmt"># Zero configuration</span>
-1. Download the latest <span class="gr">.exe</span> from Releases
-2. Run it
-3. You're live`,
-    linux: `<span class="cmt">git</span> clone https://github.com/JuanEntrena18/StreamDaemon.git
-<span class="cmt">cd</span> StreamDaemon
-<span class="gr">npm</span> install
-cp packages/backend/.env.example packages/backend/.env
-<span class="cmt"># Add your TWITCH_CLIENT_ID and TWITCH_CLIENT_SECRET</span>
-<span class="gr">npm</span> run build
-<span class="gr">npm</span> run start -w packages/backend
-
-<span class="cmt"># Open http://localhost:3000</span>`
+    win: '<span class="cmt"># Zero configuration</span>\n1. Download the latest <span class="gr">.exe</span> from Releases\n2. Run it\n3. You\'re live',
+    linux: '<span class="cmt">git</span> clone https://github.com/JuanEntrena18/StreamDaemon.git\n<span class="cmt">cd</span> StreamDaemon\n<span class="gr">npm</span> install\ncp packages/backend/.env.example packages/backend/.env\n<span class="cmt"># Add your TWITCH_CLIENT_ID and TWITCH_CLIENT_SECRET</span>\n<span class="gr">npm</span> run build\n<span class="gr">npm</span> run start -w packages/backend\n\n<span class="cmt"># Open http://localhost:3000</span>'
   };
-  document.querySelectorAll('.tab').forEach(tab => {
-    tab.addEventListener('click', () => {
-      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+
+  const tabs = document.querySelectorAll('.tab');
+  const tabContent = document.getElementById('tabContent');
+
+  tabs.forEach(tab => {
+    const activate = () => {
+      tabs.forEach(t => { t.classList.remove('active'); t.setAttribute('aria-selected', 'false'); });
       tab.classList.add('active');
-      document.getElementById('tabContent').innerHTML = tabData[tab.dataset.tab];
+      tab.setAttribute('aria-selected', 'true');
+      tabContent.innerHTML = tabData[tab.dataset.tab];
+    };
+    tab.addEventListener('click', activate);
+    tab.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); activate(); }
     });
   });
 
-  // Fade-up on scroll
-  const io = new IntersectionObserver(entries => {
-    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
-  }, { threshold: 0.15 });
+  // ===== Fade-up on scroll =====
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('in');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
   document.querySelectorAll('.fade-up').forEach(el => io.observe(el));
+
+  // ===== Back to top =====
+  const backTop = document.querySelector('.back-top');
+  let ticking = false;
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      requestAnimationFrame(() => {
+        backTop.classList.toggle('visible', window.scrollY > 600);
+        ticking = false;
+      });
+      ticking = true;
+    }
+  }, { passive: true });
+
+  backTop.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  // ===== Smooth scroll for anchor links =====
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+      const target = document.querySelector(this.getAttribute('href'));
+      if (target) {
+        e.preventDefault();
+        const offset = 80;
+        const top = target.getBoundingClientRect().top + window.scrollY - offset;
+        window.scrollTo({ top, behavior: 'smooth' });
+      }
+    });
+  });
+
+})();
 </script>
 
 </body>
